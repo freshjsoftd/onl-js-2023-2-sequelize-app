@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Type.init({
     title: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
       unique: true,
     },
@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Type',
+    // freezeTableName: true,
   });
   return Type;
 };
