@@ -11,9 +11,28 @@ const dbCheck = async () => {
         console.log('Cannot connect to DB: ', error.message)
     }
 }
-// dbCheck()
+dbCheck()
 
-const dropTypesTable = async () => {
+const addType = async () => {
+    const newType = {
+        title: 'aaa',
+        description: 'The work avto',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+    }
+    try {
+        const type = await db.Type.create(newType, {
+            returning: ['id', 'updatedAt']
+        });
+        console.log(type)
+    } catch (error) {
+        console.log('Cannot add item to table: ', error.message)
+    }
+}
+
+addType()
+
+/* const dropTypesTable = async () => {
     // console.log(db.Type.name)
     try {
         await db.Type.drop();
@@ -21,22 +40,18 @@ const dropTypesTable = async () => {
     } catch (error) {
         console.log(`Cannot drop table: `, error.message)
     }
-    // try {
-    //     await db.sequelize.drop()
-    // } catch (error) {
-        
-    // }
+    
 }
 
-// dropTypesTable()
+dropTypesTable() */
 
-const syncTypeTable = async () => {
+/* const syncTypeTable = async () => {
     try {
         await db.Type.sync({alter: true});
         console.log('Sync table has been done')
     } catch (error) {
         console.log('Cannot sync table: ', error.message)
     }
-}
+} */
 
-syncTypeTable()
+// syncTypeTable()
