@@ -17,12 +17,14 @@ module.exports = {
 			description: {
 				type: Sequelize.TEXT,
 			},
-			createdAt: {
-				allowNull: false,
+			created_at: {
+				// allowNull: false,
+				defaultValue: Sequelize.NOW,
 				type: Sequelize.DATE,
 			},
-			updatedAt: {
-				allowNull: false,
+			updated_at: {
+				// allowNull: false,
+				defaultValue: Sequelize.NOW,
 				type: Sequelize.DATE,
 			},
 		});

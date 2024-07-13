@@ -1,7 +1,18 @@
-console.log('Hi everybody');
 const db = require('./src/db/models');
 
+const {brands, types, countries} = require('./src/constants');
+const { where } = require('sequelize');
+
 const {Brand, Type, Country} = db;
+
+const {Sequelize: {Op}} = db;
+
+const newBrand = {
+	title: 'ZAZ',
+	description: 'Famous Ukranian avto brand',
+	createdAt: new Date(),
+	updatedAt: new Date(),
+};
 
 const dbCheck = async () => {
 	try {
@@ -15,16 +26,12 @@ const dbCheck = async () => {
 };
 dbCheck();
 
-const addType = async () => {
-	const newType = {
-		title: 'aaa',
-		description: 'The work avto',
-		createdAt: new Date(),
-		updatedAt: new Date(),
-	};
+const addItem = async (model, values) => {
+	
 	try {
-		const type = await db.Type.create(newType, {
+		const type = await model.create(values, {
 			returning: ['id', 'updatedAt'],
+			raw: true,
 		});
 		console.log(type);
 	} catch (error) {
@@ -32,12 +39,13 @@ const addType = async () => {
 	}
 };
 
-// addType()
-const deleteType = async () => {
+// addItem(Brand, newBrand)
+
+const deleteItem = async (model) => {
 	try {
-		const delAmount = await db.Type.destroy({
+		const delAmount = await model.destroy({
 			where: {
-				title: 'aaa',
+				title: 'ZAZ',
 			},
 		});
         console.log(`Number of deleting rows: ${delAmount}`)
@@ -46,7 +54,52 @@ const deleteType = async () => {
 	}
 };
 
-// deleteType();
+// deleteItem(Brand);
+
+// Insert many items
+const addItems = async (model, values) => {
+	try {
+		await model.bulkCreate(values, {
+			// fields: ['title', 'description'],
+		})
+	} catch (error) {
+		console.log(error.message)
+	}
+}
+
+// addItems(Type, types)
+
+// Select items
+
+const getItems = async (model) => {
+	try {
+		const gettingItems = await model.findAll({
+			where: {
+				title: {
+					[Op.like]: 'L%'
+				}
+			},
+			raw: true,
+			// attributes: ['id', ['title', 'name']],
+			group: 'id',
+			attributes: {
+				exclude: ['createdAt', 'updatedAt'],
+				include: [[db.sequelize.fn('SUM', db.sequelize.col('id')), 'total']],
+			},
+		})
+		console.log(gettingItems);
+		gettingItems.forEach(item => {
+			console.log('Item is: --- ', item)
+		})
+	} catch (error) {
+		console.log(error.message)
+	}
+}
+
+getItems(Type)
+
+
+
 const dropSomeTable = async (model) => {
     // console.log(db.Type.name)
     try {
