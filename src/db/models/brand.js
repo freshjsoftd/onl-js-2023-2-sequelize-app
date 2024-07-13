@@ -19,7 +19,6 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       unique: true,
     },
-    country: DataTypes.STRING,
     description: DataTypes.TEXT
   }, {
     sequelize,

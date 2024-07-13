@@ -1,57 +1,72 @@
-console.log('Hi everybody')
+console.log('Hi everybody');
+const db = require('./src/db/models');
 
-const db = require('./src/db/models')
+const {Brand, Type, Country} = db;
 
 const dbCheck = async () => {
-    try {
-        await db.sequelize.authenticate();
-        console.log(`Connection with DB <<<${process.env.DB_NAME.toUpperCase()}>>> has been successfully done`)
-        
-    } catch (error) {
-        console.log('Cannot connect to DB: ', error.message)
-    }
-}
-dbCheck()
+	try {
+		await db.sequelize.authenticate();
+		console.log(
+			`Connection with DB <<<${process.env.DB_NAME.toUpperCase()}>>> has been successfully done`
+		);
+	} catch (error) {
+		console.log('Cannot connect to DB: ', error.message);
+	}
+};
+dbCheck();
 
 const addType = async () => {
-    const newType = {
-        title: 'aaa',
-        description: 'The work avto',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-    }
-    try {
-        const type = await db.Type.create(newType, {
-            returning: ['id', 'updatedAt']
-        });
-        console.log(type)
-    } catch (error) {
-        console.log('Cannot add item to table: ', error.message)
-    }
-}
+	const newType = {
+		title: 'aaa',
+		description: 'The work avto',
+		createdAt: new Date(),
+		updatedAt: new Date(),
+	};
+	try {
+		const type = await db.Type.create(newType, {
+			returning: ['id', 'updatedAt'],
+		});
+		console.log(type);
+	} catch (error) {
+		console.log('Cannot add item to table: ', error.message);
+	}
+};
 
-addType()
+// addType()
+const deleteType = async () => {
+	try {
+		const delAmount = await db.Type.destroy({
+			where: {
+				title: 'aaa',
+			},
+		});
+        console.log(`Number of deleting rows: ${delAmount}`)
+	} catch (error) {
+		console.log('Cannot delete item from table: ', error.message);
+	}
+};
 
-/* const dropTypesTable = async () => {
+// deleteType();
+const dropSomeTable = async (model) => {
     // console.log(db.Type.name)
     try {
-        await db.Type.drop();
-        console.log(`Table ${db.Type.name} has been droped`)
+        await model.drop();
+        console.log(`Table has been droped`)
     } catch (error) {
         console.log(`Cannot drop table: `, error.message)
     }
     
 }
 
-dropTypesTable() */
+// dropSomeTable(Country)
 
-/* const syncTypeTable = async () => {
+const syncSomeTable = async (model) => {
     try {
-        await db.Type.sync({alter: true});
+        await model.sync({alter: true});
         console.log('Sync table has been done')
     } catch (error) {
         console.log('Cannot sync table: ', error.message)
     }
-} */
+}
 
-// syncTypeTable()
+// syncSomeTable(Country)

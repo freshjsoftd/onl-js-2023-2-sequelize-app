@@ -10,25 +10,19 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       title: {
-        type: {
           type: Sequelize.STRING,
           allowNull: false,
           unique: true,
-        }
-
-      },
-      country: {
-        type: Sequelize.STRING
       },
       description: {
         type: Sequelize.TEXT
       },
       createdAt: {
-        allowNull: false,
+        // allowNull: false,
         type: Sequelize.DATE
       },
       updatedAt: {
-        allowNull: false,
+        // allowNull: false,
         type: Sequelize.DATE
       }
     });
