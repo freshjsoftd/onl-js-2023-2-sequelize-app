@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Brand.belongsTo(models.Country, {foreignKey: 'countryId'})
     }
   }
   Brand.init({
@@ -23,6 +24,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Brand',
+    tableName: 'Brands',
+    underscored: true,
   });
   return Brand;
 };

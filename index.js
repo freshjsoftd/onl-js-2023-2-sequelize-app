@@ -1,9 +1,11 @@
 const db = require('./src/db/models');
 
+const bcrypt = require('bcrypt')
+
 const {brands, types, countries} = require('./src/constants');
 const { where } = require('sequelize');
 
-const {Brand, Type, Country} = db;
+const {Brand, Type, Country, User } = db;
 
 const {Sequelize: {Op}} = db;
 
@@ -13,6 +15,25 @@ const newBrand = {
 	createdAt: new Date(),
 	updatedAt: new Date(),
 };
+
+const newCountry = {
+	title: 'JP',
+	description: 'Japane',
+	created_at: new Date(),
+	updatedAt: new Date(),
+}
+
+const newUser = {
+	full_name: 'Petr Pyatochkin',
+	email: 'p_p@gmail.com',
+	password: 'QWERTY',
+	created_at: new Date(),
+	updated_at: new Date(),
+}
+
+const updatedCountry = {
+	description: 'Unknown',
+}
 
 const dbCheck = async () => {
 	try {
@@ -30,8 +51,9 @@ const addItem = async (model, values) => {
 	
 	try {
 		const type = await model.create(values, {
-			returning: ['id', 'updatedAt'],
-			raw: true,
+			returning: ['id'],
+			// raw: true,
+			// validate: false,
 		});
 		console.log(type);
 	} catch (error) {
@@ -39,14 +61,12 @@ const addItem = async (model, values) => {
 	}
 };
 
-// addItem(Brand, newBrand)
+// addItem(User, newUser)
 
 const deleteItem = async (model) => {
 	try {
 		const delAmount = await model.destroy({
-			where: {
-				title: 'ZAZ',
-			},
+			where: {}
 		});
         console.log(`Number of deleting rows: ${delAmount}`)
 	} catch (error) {
@@ -54,7 +74,31 @@ const deleteItem = async (model) => {
 	}
 };
 
-// deleteItem(Brand);
+// deleteItem(User);
+
+// Update
+const changeItems = async (model, values) => {
+	try {
+		const [number, result] = await model.update(values, {
+			where: {
+				title: {
+					[Op.like]: 'U%'
+				}
+			},
+			returning: ['*'],
+			raw: true,
+		})
+		// console.log(updatedItems)
+		console.log(number)
+		console.log(result)
+	} catch (error) {
+		console.log(error.message)
+	}
+}
+
+// changeItems(Country, updatedCountry)
+
+
 
 // Insert many items
 const addItems = async (model, values) => {
@@ -75,28 +119,29 @@ const getItems = async (model) => {
 	try {
 		const gettingItems = await model.findAll({
 			where: {
-				title: {
-					[Op.like]: 'L%'
+				full_name: {
+					[Op.like]: 'vas%'
 				}
 			},
-			raw: true,
+			returning: 'full_name',
+			// raw: true,
 			// attributes: ['id', ['title', 'name']],
-			group: 'id',
-			attributes: {
-				exclude: ['createdAt', 'updatedAt'],
-				include: [[db.sequelize.fn('SUM', db.sequelize.col('id')), 'total']],
-			},
+			// group: 'id',
+			// attributes: {
+			// 	exclude: ['createdAt', 'updatedAt'],
+			// 	include: [[db.sequelize.fn('SUM', db.sequelize.col('id')), 'total']],
+			// },
 		})
 		console.log(gettingItems);
 		gettingItems.forEach(item => {
-			console.log('Item is: --- ', item)
+			console.log('Item is: --- ', item.full_name)
 		})
 	} catch (error) {
 		console.log(error.message)
 	}
 }
 
-getItems(Type)
+// getItems(User)
 
 
 
@@ -122,4 +167,21 @@ const syncSomeTable = async (model) => {
     }
 }
 
-// syncSomeTable(Country)
+syncSomeTable(Brand)
+
+
+// Crypt test
+
+const cryptTest = async () => {
+	const password = 'ASDFGHJ';
+	const anotherOnePassword = 'JHGFDSA';
+	const hash = await bcrypt.hash(password, 10)
+	console.log('Hash is --- ', hash)
+	const compareResult = await bcrypt.compare(password, hash)
+	console.log('Right', compareResult)
+	const otherCompareResult = await bcrypt.compare(anotherOnePassword, hash)
+	console.log('Error', otherCompareResult)
+
+}
+
+// cryptTest()

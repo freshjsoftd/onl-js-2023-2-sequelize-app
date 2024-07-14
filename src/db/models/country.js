@@ -9,6 +9,11 @@ module.exports = (sequelize, DataTypes) => {
 		 */
 		static associate(models) {
 			// define association here
+			Country.hasMany(models.Brand, {
+				foreignKey: 'countryId',
+				onDelete: 'CASCADE',
+				onUpdate: 'CASCADE',
+			})
 		}
 	}
 	Country.init({
@@ -16,9 +21,15 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.STRING,
 				allowNull: false,
 				unique: true,
+				validate: {
+					len: {
+						msg: 'Must be more then 5',
+						args: [1,5]
+					}
+				},
 			},
-			description: DataTypes.TEXT,
-		},
+				description: DataTypes.TEXT,
+			},
 		{
 			sequelize,
 			modelName: 'Country',

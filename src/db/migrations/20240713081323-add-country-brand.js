@@ -6,6 +6,10 @@ module.exports = {
     
      await queryInterface.addColumn('Brands', 'country_id', {
       type: Sequelize.INTEGER,
+      references: {
+         model: 'Countries',
+         key: 'id',
+      }
      });
     
   },
